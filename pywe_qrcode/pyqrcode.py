@@ -65,6 +65,8 @@ class QRCode(BaseToken):
             },
             data=data
         )
+        if 'ticket' not in qrinfo:
+            return qrinfo
         if qrurl:
             return self.showurl(qrinfo.get('ticket'))
         if qrdata:

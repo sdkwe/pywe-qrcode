@@ -12,7 +12,7 @@ class QRCode(BaseToken):
         # 通过ticket换取二维码
         self.WECHAT_SHOW_QRCODE = self.MP_DOMAIN + '/cgi-bin/showqrcode?ticket={ticket}'
 
-    def create(self, action_name='QR_SCENE', scene_id=0, scene_str='', expire_seconds=2592000, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False):
+    def create(self, action_name='QR_SCENE', scene_id=0, scene_str='', expire_seconds=2592000, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False, useurl=False):
         """
         ``action_name`` 二维码类型，QR_SCENE为临时的整型参数值，QR_STR_SCENE为临时的字符串参数值，QR_LIMIT_SCENE为永久的整型参数值，QR_LIMIT_STR_SCENE为永久的字符串参数值
         ``scene_id``场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
@@ -68,22 +68,22 @@ class QRCode(BaseToken):
         if 'ticket' not in qrinfo:
             return qrinfo
         if qrurl:
-            return self.showurl(qrinfo.get('ticket'))
+            return qrinfo.get('url') if useurl else self.showurl(qrinfo.get('ticket'))
         if qrdata:
             return self.download(qrinfo.get('ticket'))
         return qrinfo
 
-    def create_scene(self, scene_id=0, expire_seconds=2592000, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False):
-        return self.create(action_name='QR_SCENE', scene_id=scene_id, expire_seconds=expire_seconds, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata)
+    def create_scene(self, scene_id=0, expire_seconds=2592000, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False, useurl=False):
+        return self.create(action_name='QR_SCENE', scene_id=scene_id, expire_seconds=expire_seconds, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata, useurl=useurl)
 
-    def create_str_scene(self, scene_str='', expire_seconds=2592000, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False):
-        return self.create(action_name='QR_STR_SCENE', scene_str=scene_str, expire_seconds=expire_seconds, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata)
+    def create_str_scene(self, scene_str='', expire_seconds=2592000, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False, useurl=False):
+        return self.create(action_name='QR_STR_SCENE', scene_str=scene_str, expire_seconds=expire_seconds, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata, useurl=useurl)
 
-    def create_limit_scene(self, scene_id=0, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False):
-        return self.create(action_name='QR_LIMIT_SCENE', scene_id=scene_id, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata)
+    def create_limit_scene(self, scene_id=0, appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False, useurl=False):
+        return self.create(action_name='QR_LIMIT_SCENE', scene_id=scene_id, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata, useurl=useurl)
 
-    def create_limit_str_scene(self, scene_str='', appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False):
-        return self.create(action_name='QR_LIMIT_STR_SCENE', scene_str=scene_str, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata)
+    def create_limit_str_scene(self, scene_str='', appid=None, secret=None, token=None, storage=None, qrurl=False, qrdata=False, useurl=False):
+        return self.create(action_name='QR_LIMIT_STR_SCENE', scene_str=scene_str, appid=appid, secret=secret, token=token, storage=storage, qrurl=qrurl, qrdata=qrdata, useurl=useurl)
 
     def download(self, ticket):
         return self.get(self.WECHAT_SHOW_QRCODE, ticket=ticket, res_to_json=False)
